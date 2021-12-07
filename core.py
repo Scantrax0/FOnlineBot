@@ -112,3 +112,10 @@ def pick_answer(answer_y=0):
         return True
     else:
         return 'no dialog window'
+
+
+def check_running():
+    for i in range(3):
+        if pyautogui.locateOnScreen('running.png'):
+            return True
+    return False
