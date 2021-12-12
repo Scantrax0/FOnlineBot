@@ -16,7 +16,7 @@ def get_dialog_answers():
 
     :return:
     """
-    pyautogui.moveTo(0, 0)
+    pyautogui.moveTo(10, 10)
     dialog = pyautogui.locateOnScreen('locate/dialog_anchor.png')
 
     if dialog:
@@ -102,20 +102,21 @@ def pick_answer(answer_y=0):
     :param answer_y:
     :return:
     """
-    pyautogui.moveTo(0, 0)
+    pyautogui.moveTo(10, 10)
     dialog = pyautogui.locateOnScreen('locate/dialog_anchor.png')
 
     if dialog:
         dialog_x, dialog_y = dialog[0], dialog[1]
         pyautogui.moveTo(dialog_x, dialog_y + 120 + answer_y)
-        pyautogui.click()
+        # pyautogui.click()
         return True
     else:
         return 'no dialog window'
 
 
 def check_running():
-    for i in range(3):
-        if pyautogui.locateOnScreen('running.png'):
-            return True
+    if pyautogui.locateOnScreen('locate/red_dot.png'):
+        return True
+    if pyautogui.locateOnScreen('locate/red_dot.png'):
+        return True
     return False
