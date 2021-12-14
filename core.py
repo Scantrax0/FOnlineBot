@@ -66,6 +66,7 @@ def get_dialog_answers():
                 response.append((coordinates, ' '.join([_[1] for _ in elem])))
 
         if response:
+            print(response)
             return response
         else:
             return 'nothing'
@@ -96,7 +97,7 @@ def find_answer(string, answers_list):
     return correct_answer[1]
 
 
-def pick_answer(answer_y=0):
+def pick_answer(answer_y=2):
     """
     выбирает реплику в диалоге по координате, если вызвана без аргумента - выбирается первая строка
     :param answer_y:
@@ -108,7 +109,7 @@ def pick_answer(answer_y=0):
     if dialog:
         dialog_x, dialog_y = dialog[0], dialog[1]
         pyautogui.moveTo(dialog_x, dialog_y + 120 + answer_y)
-        # pyautogui.click()
+        pyautogui.click()
         return True
     else:
         return 'no dialog window'
@@ -120,3 +121,111 @@ def check_running():
     if pyautogui.locateOnScreen('locate/red_dot.png'):
         return True
     return False
+
+
+def talk(img_url):
+    char = pyautogui.locateOnScreen(img_url)
+    print(char)
+    if char:
+        print(char[0] + char[2] // 2, char[1] + char[3] // 2)
+        pyautogui.moveTo(char[0] + char[2] // 2, char[1] + char[3] // 2)
+        pyautogui.click()
+        pyautogui.moveTo(10, 10)
+        return True
+    else:
+        print('cannot find character')
+        return 'cannot find character'
+
+
+def proceed_dialog(answers_list):
+    for elem in answers_list:
+        if elem == 0:
+            pick_answer()
+        else:
+            answers = get_dialog_answers()
+            if answers == 'no dialog window':
+                print(answers)
+                return False
+            elif answers == 'nothing':
+                # здесь надо сделать изменение области сканирования
+                print(answers)
+                return False
+            else:
+                pick_answer(find_answer(elem, answers))
+        time.sleep(0.5)
+
+
+class Noob:
+
+    kid = 'locate/noob/kid.png'
+    augusto = 'locate/noob/augusto.png'
+    ed = 'locate/noob/ed.png'
+    auto = 'locate/noob/auto.png'
+
+    @staticmethod
+    def seq1():
+        talk(Noob.augusto)
+        while check_running():
+            time.sleep(1)
+        proceed_dialog([0, 0, 0, 0, 0])
+        return 'success'
+
+    @staticmethod
+    def seq2():
+        talk(Noob.augusto)
+        proceed_dialog([
+            'Я спросить.',
+            'Есть мелочь?',
+            'Вот спасибо'
+        ])
+        return 'success'
+
+    @staticmethod
+    def seq3():
+        pyautogui.moveTo(0, 0)
+        time.sleep(1)
+        pyautogui.moveTo(10, 10)
+        pyautogui.moveTo(1525, 440)
+        pyautogui.rightClick()
+        pyautogui.click()
+        pyautogui.rightClick()
+        while check_running():
+            time.sleep(1)
+        talk(Noob.kid)
+        proceed_dialog([
+            'Секреты - это хорошо. Держи копейку.',
+            0,
+            0,
+            0,
+            'Нож, значит? Окей, будет тебе нож.'
+        ])
+        return 'success'
+
+    @staticmethod
+    def seq4():
+        talk(Noob.ed)
+        while check_running():
+            time.sleep(1)
+        proceed_dialog([
+            0,
+            'А, ну да, точно.',
+            'Чем занят?',
+            'Что за Вескер',
+            'Так ты знаешь, как пройти через дверь?!',
+            0,
+            'Окей, пойду к нему.'
+        ])
+        return 'success'
+
+    @staticmethod
+    def seq5():
+        talk(Noob.auto)
+        while check_running():
+            time.sleep(1)
+        proceed_dialog(['Придумать, способ, как вытащить пару монет.'])
+        pyautogui.press('esc')
+        return 'success'
+
+
+
+
