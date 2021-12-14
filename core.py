@@ -115,6 +115,15 @@ def pick_answer(answer_y=2):
         return 'no dialog window'
 
 
+def run(x, y):
+    pyautogui.moveTo(x, y)
+    pyautogui.rightClick()
+    pyautogui.click()
+    pyautogui.rightClick()
+    pyautogui.moveTo(10, 10)
+    return True
+
+
 def check_running():
     if pyautogui.locateOnScreen('locate/red_dot.png'):
         return True
@@ -125,9 +134,8 @@ def check_running():
 
 def talk(img_url):
     char = pyautogui.locateOnScreen(img_url)
-    print(char)
     if char:
-        print(char[0] + char[2] // 2, char[1] + char[3] // 2)
+        # print(char[0] + char[2] // 2, char[1] + char[3] // 2)
         pyautogui.moveTo(char[0] + char[2] // 2, char[1] + char[3] // 2)
         pyautogui.click()
         pyautogui.moveTo(10, 10)
@@ -135,6 +143,13 @@ def talk(img_url):
     else:
         print('cannot find character')
         return 'cannot find character'
+
+
+def talk_xy(x, y):
+    pyautogui.moveTo(x, y)
+    pyautogui.click()
+    pyautogui.moveTo(10, 10)
+    return True
 
 
 def proceed_dialog(answers_list):
@@ -157,14 +172,38 @@ def proceed_dialog(answers_list):
 
 class Noob:
 
-    kid = 'locate/noob/kid.png'
-    augusto = 'locate/noob/augusto.png'
-    ed = 'locate/noob/ed.png'
-    auto = 'locate/noob/auto.png'
+    # 1 quarter
+    augusto = (1056, 434)
+
+    # 2 quarter
+    kid = (1484, 370)
+
+    # 2 quarter
+    ed = (1151, 415)
+
+    # 2 quarter
+    auto = (972, 641)
+
+    @staticmethod
+    def move_to_quarter(quarter):
+        if quarter == 1:
+            pyautogui.moveTo(1919, 0)
+        elif quarter == 2:
+            pyautogui.moveTo(0, 0)
+        elif quarter == 3:
+            pyautogui.moveTo(0, 1079)
+        elif quarter == 4:
+            pyautogui.moveTo(1919, 1079)
+        else:
+            raise Exception('wrong argument: should be int')
+        time.sleep(1)
+        pyautogui.moveTo(10, 10)
+        return True
 
     @staticmethod
     def seq1():
-        talk(Noob.augusto)
+        Noob.move_to_quarter(1)
+        talk_xy(*Noob.augusto)
         while check_running():
             time.sleep(1)
         proceed_dialog([0, 0, 0, 0, 0])
@@ -172,7 +211,8 @@ class Noob:
 
     @staticmethod
     def seq2():
-        talk(Noob.augusto)
+        Noob.move_to_quarter(1)
+        talk_xy(*Noob.augusto)
         proceed_dialog([
             'Я спросить.',
             'Есть мелочь?',
@@ -182,16 +222,12 @@ class Noob:
 
     @staticmethod
     def seq3():
-        pyautogui.moveTo(0, 0)
-        time.sleep(1)
-        pyautogui.moveTo(10, 10)
-        pyautogui.moveTo(1525, 440)
-        pyautogui.rightClick()
-        pyautogui.click()
-        pyautogui.rightClick()
+        Noob.move_to_quarter(1)
+        run(94, 434)
+        Noob.move_to_quarter(2)
         while check_running():
             time.sleep(1)
-        talk(Noob.kid)
+        talk_xy(*Noob.kid)
         proceed_dialog([
             'Секреты - это хорошо. Держи копейку.',
             0,
@@ -203,7 +239,8 @@ class Noob:
 
     @staticmethod
     def seq4():
-        talk(Noob.ed)
+        Noob.move_to_quarter(2)
+        talk_xy(*Noob.ed)
         while check_running():
             time.sleep(1)
         proceed_dialog([
@@ -219,7 +256,8 @@ class Noob:
 
     @staticmethod
     def seq5():
-        talk(Noob.auto)
+        Noob.move_to_quarter(2)
+        talk_xy(*Noob.auto)
         while check_running():
             time.sleep(1)
         proceed_dialog(['Придумать, способ, как вытащить пару монет.'])
