@@ -93,6 +93,8 @@ def find_answer(string, answers_list):
     correct_answer = min(diff_list, key=lambda x: x[0])
 
     # здесь нужна проверка на адекватность ответа
+    if correct_answer[0] > len(string) // 2:
+        return 'cannot find correct answer'
 
     return correct_answer[1]
 
@@ -166,7 +168,10 @@ def proceed_dialog(answers_list):
                 print(answers)
                 return False
             else:
-                pick_answer(find_answer(elem, answers))
+                found_answer = find_answer(elem, answers)
+                if found_answer == 'cannot find correct answer':
+                    raise Exception('cannot find correct answer')
+                pick_answer(found_answer)
         time.sleep(0.5)
 
 
