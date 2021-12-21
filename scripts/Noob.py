@@ -1,4 +1,5 @@
 from ..core import *
+from ..logger import Logger
 
 
 class Noob:
@@ -109,3 +110,4 @@ if __name__ == '__main__':
     Noob.seq2()
     Noob.seq3()
     Noob.seq4()
+    Logger.log('hello')
