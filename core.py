@@ -4,6 +4,7 @@ from pyxdameraulevenshtein import normalized_damerau_levenshtein_distance as ndl
 import time
 import pytesseract
 from PIL import Image
+from logger import Logger
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
@@ -66,12 +67,14 @@ def get_dialog_answers():
                 response.append((coordinates, ' '.join([_[1] for _ in elem])))
 
         if response:
-            print(response)
+            print('get_dialog_answers: ', response)
             return response
         else:
+            print('get_dialog_answers: found no answers')
             return 'nothing'
 
     else:
+        print('get_dialog_answers: no dialog window')
         return 'no dialog window'
 
 
@@ -89,13 +92,18 @@ def find_answer(string, answers_list):
     for answer in answers_list:
         diff_list.append((dld(string, answer[1]), answer[0]))
 
+    print(f'find_answer: Ответы с расстоянием (ищем {string})')
+    print(*diff_list)
+
     # находим элемент с минимальным расстоянием
     correct_answer = min(diff_list, key=lambda x: x[0])
 
     # здесь нужна проверка на адекватность ответа
     if correct_answer[0] > len(string) // 2:
+        print('find_answer: cannot find correct answer')
         return 'cannot find correct answer'
 
+    print('find_answer: ', correct_answer)
     return correct_answer[1]
 
 
@@ -112,12 +120,21 @@ def pick_answer(answer_y=2):
         dialog_x, dialog_y = dialog[0], dialog[1]
         pyautogui.moveTo(dialog_x, dialog_y + 120 + answer_y)
         pyautogui.click()
+        print('pick_answer: picked')
         return True
     else:
+        print('pick_answer: no dialog window')
         return 'no dialog window'
 
 
 def run(x, y):
+    # TODO сделать функцию переключения курсора
+    """
+    бежать в точку x,y
+    :param x:
+    :param y:
+    :return:
+    """
     pyautogui.moveTo(x, y)
     pyautogui.rightClick()
     pyautogui.click()
@@ -127,6 +144,10 @@ def run(x, y):
 
 
 def check_running():
+    """
+    проверяет бежит ли персонаж
+    :return:
+    """
     if pyautogui.locateOnScreen('locate/red_dot.png'):
         return True
     if pyautogui.locateOnScreen('locate/red_dot.png'):
@@ -137,17 +158,18 @@ def check_running():
 def talk(img_url):
     char = pyautogui.locateOnScreen(img_url)
     if char:
-        # print(char[0] + char[2] // 2, char[1] + char[3] // 2)
         pyautogui.moveTo(char[0] + char[2] // 2, char[1] + char[3] // 2)
         pyautogui.click()
         pyautogui.moveTo(10, 10)
+        print('talk: char x, y - ', char[0] + char[2] // 2, char[1] + char[3] // 2)
         return True
     else:
-        print('cannot find character')
+        print('talk: cannot find character')
         return 'cannot find character'
 
 
 def talk_xy(x, y):
+    print('talk_xy: ', x, y)
     pyautogui.moveTo(x, y)
     pyautogui.click()
     pyautogui.moveTo(10, 10)
